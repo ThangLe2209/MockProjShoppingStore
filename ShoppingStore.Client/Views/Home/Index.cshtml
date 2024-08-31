@@ -1,0 +1,82 @@
+﻿@model IEnumerable<ProductDto>
+@inject IConfiguration Configuration
+
+@{
+    var backendApiImagePath = Configuration.GetValue<string>("ShoppingStoreAPIImagePath");
+}
+<div class="col-sm-3">
+    @* @Html.Partial("_SidebarPartial") *@
+    <partial name="_SidebarPartial" />
+    @* <partial name="_PieCard" model="pie" /> *@
+</div>
+
+<style>
+    .product-image-wrapper {
+        height: 450px;
+    }
+</style>
+
+<div class="col-sm-9 padding-right">
+    <div class="features_items">
+        <!--features_items-->
+        <h2 class="title text-center">Features Items</h2>
+        @foreach (var item in Model)
+        {
+            <div class="col-sm-4">
+                <div class="product-image-wrapper">
+                    <div class="single-products">
+                        <div class="productinfo text-center">
+                            <a asp-action="Details" asp-controller="Product" asp-route-id="@item.Id">
+                                @* <img src="@("https://localhost:7264/media/products/" + item.Image)" alt="@item.Name" height="210px" /> *@
+                                <img src="@(backendApiImagePath + item.Image)" alt="@item.Name" height="210px" />
+                                <h2>@item.Price $</h2>
+                                <p>@item.Name</p>
+                                <p>Category: @item.Category?.Name</p>
+                                <p>Brand: @item.Brand?.Name</p>
+                            </a>
+                            <a class="btn btn-default add-to-cart" asp-action="Add" asp-controller="Cart" asp-route-id="@item.Id"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+                            @* <button class="btn btn-default add-to-cart" data-product-id="@item.Id"><i class="fa fa-shopping-cart"></i>Add to Cart</button> *@
+                        </div>
+                    </div>
+                    @*                     <div class="choose">
+                <ul class="nav nav-pills nav-justified">
+                <li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
+                <li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+                </ul>
+                </div> *@
+                </div>
+            </div>
+        }
+
+    </div><!--features_items-->
+
+</div>
+
+@section Scripts {
+    <script>
+        // $(document).ready(function () {
+        //     $('.add-to-cart').click(function () {
+        //         var Id = $(this).data()["productId"];
+
+        //         // console.log(Id);
+        //         $.ajax({
+        //             type: "POST",
+        //             url: "@Url.Action("Add", "Cart")",
+        //             data: {Id: Id},
+
+        //             success: function (result) {
+        //                 if (result) {
+        //                     Swal.fire("Add to cart successfully");
+        //                 }
+        //             }
+        //         })
+
+                // Test
+                // fetch(`https://localhost:7264/api/products/productByBrandSlug?slug=apple`)
+                //     .then(response => response.json())
+                //     .then(data => console.log(data))
+                //     .catch(error => console.log({error}));
+            })
+        })
+    </script>
+}

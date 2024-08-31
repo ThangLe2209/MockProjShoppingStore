@@ -1,0 +1,63 @@
+﻿@model UserForCreationDto
+@{
+    ViewData["title"] = "Create User";
+}
+
+<h4>Create User</h4>
+<div class="col-md-9" style="margin-bottom: 40px">
+    <form asp-action="Create" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label>Name</label>
+            <input asp-for="UserName" class="form-control" />
+            <span asp-validation-for="UserName" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input asp-for="Email" class="form-control" type="email"/>
+            <span asp-validation-for="Email" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input asp-for="Password" class="form-control" type="password" />
+            <span asp-validation-for="Password" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <label>Role</label>
+            <select asp-for="UserRoleId" class="form-control" asp-items="ViewBag.UserRoles">
+                <option>==Choose a role</option>
+            </select>
+            <span asp-validation-for="UserRoleId" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <label>Countries</label>
+            <select asp-for="Country" class="form-control" asp-items="ViewBag.Countries">
+                <option value="">==Choose a Country</option>
+            </select>
+            <span asp-validation-for="Country" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary">Create</button>
+        </div>
+    </form>
+    <a asp-action="Index">Back to List User</a>
+</div>
+
+@section Scripts { 
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @* <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('Description');
+    </script> *@
+
+    <script>
+        $("#ImageUpload").change(function () {
+            readURL(this);
+        })
+    </script>
+}
+
+
