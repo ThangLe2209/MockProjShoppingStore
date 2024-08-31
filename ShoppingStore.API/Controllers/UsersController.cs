@@ -12,6 +12,7 @@ namespace ShoppingStore.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -25,6 +26,7 @@ namespace ShoppingStore.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "ClientApplicationCanWrite")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
             var userEntities = await _userRepository.GetUsersAsync();
@@ -107,7 +109,7 @@ namespace ShoppingStore.API.Controllers
         [HttpPost("activeAccount")]
         public async Task<IActionResult> ActiveAccount([FromBody] string? statusCode)
         {
-            var updateUserAccount = _userRepository.ActivateUserAsync(statusCode);
+            var updateUserAccount = await _userRepository.ActivateUserAsync(statusCode);
             await _userRepository.SaveChangesAsync();
             return Ok();
         }
@@ -151,6 +153,7 @@ namespace ShoppingStore.API.Controllers
                     Type = "role",
                     Value = userRole.Value
                 });
+
 				currentUser.Claims.Add(new UserClaim()
 				{
 					Type = JwtClaimTypes.Email,

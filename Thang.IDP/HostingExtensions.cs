@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 using Thang.IDP.DbContexts;
 using Thang.IDP.Services;
@@ -28,10 +30,10 @@ internal static class HostingExtensions
 
         builder.Services.AddScoped<IPasswordHasher<Entities.User>, PasswordHasher<Entities.User>>();
         builder.Services.AddScoped<ILocalUserService, LocalUserService>(); // register LocalUserService instance
+        ConfigurationHelper.Initialize(builder.Configuration);
         builder.Services.AddDbContext<IdentityDbContext>(options => // ef core db sqlite
         {
-            options.UseSqlite(builder.Configuration.GetConnectionString("ThangIdentityDBConnectionString"));
-            //options.UseSqlServer("Data Source=DESKTOP-98CHSUQ;Database=MarvinIDPDB;User ID=sa;Password=122215;Trust Server Certificate=True");
+            options.UseNpgsql(builder.Configuration.GetConnectionString("IdentityDBConnectionStringPostgres"));
         });
 
         builder.Services.AddIdentityServer(options =>
@@ -45,11 +47,18 @@ internal static class HostingExtensions
             .AddInMemoryApiResources(Config.ApiResources) // config to use APi Resource
             .AddInMemoryClients(Config.Clients);
         //.AddTestUsers(TestUsers.Users);
+
+        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+        });
         return builder.Build();
     }
     
     public static WebApplication ConfigurePipeline(this WebApplication app)
     { 
+        app.UseForwardedHeaders();
+
         app.UseSerilogRequestLogging();
     
         if (app.Environment.IsDevelopment())

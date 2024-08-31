@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.Net.Http.Headers;
 using ShoppingStore.Client.Repository;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews()
 	.AddJsonOptions(configure =>
 		configure.JsonSerializerOptions.PropertyNamingPolicy = null);
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
 
 JsonWebTokenHandler.DefaultInboundClaimTypeMap.Clear(); // clear dictionaries to avoid mapping claim type - get same claim name from IDP and client
 
@@ -61,14 +68,15 @@ builder.Services.AddAuthentication(options => // authentication middleware
         // the successful result of authentication will be stored in the cookie matching this scheme
         options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
         options.Authority = builder.Configuration["IDPServerRoot"]; // idp uri
+        //options.RequireHttpsMetadata = false;
         //options.Authority = "https://localhost:5001/"; // idp uri
-                                                        // clientid+clientsecret allow the client application to execute an authenticated call to the token endpoint(authorize btn in swagger)
+        // clientid+clientsecret allow the client application to execute an authenticated call to the token endpoint(authorize btn in swagger)
         options.ClientId = "shoppingstoreclient";
         options.ClientSecret = "secret";
         options.ResponseType = "code"; // corresponds to flow -> code = Authorization Code Flow
         //options.Scope.Add("openid");
         //options.Scope.Add("profile");
-        //options.CallbackPath = new PathString("signin-oidc");
+        //options.CallbackPath = new PathString("signin-oidc"); // if not use forward header then IDP will recieve http request redirectUrl because render reverse proxy
         // SignedOutCallbackPath: default = host:port/signout-callback-oidc.
         // Must match with the post logout redirect URI at IDP client config if
         // you want to automatically return to the application after logging out
@@ -98,6 +106,7 @@ builder.Services.AddAuthentication(options => // authentication middleware
 
 
 var app = builder.Build();
+app.UseForwardedHeaders(); // fix http by reverse proxy when access IDP server
 
 // setup 404 page
 app.UseStatusCodePagesWithRedirects("/Home/Error?statuscode={0}");

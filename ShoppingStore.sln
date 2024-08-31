@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingStore.Client", "Sho
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingStore.API", "ShoppingStore.API\ShoppingStore.API.csproj", "{F68142AA-3C74-4AB2-A2BA-20BD9B72C8C1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingStore.Model", "ShoppingStore.Model\ShoppingStore.Model.csproj", "{E91EE7F9-9022-4DEA-B35D-71FCBD627A78}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thang.IDP", "Thang.IDP\Thang.IDP.csproj", "{0893A0F9-4883-47EB-A201-13B609B1AE19}"
 EndProject
 Global
@@ -25,10 +23,6 @@ Global
 		{F68142AA-3C74-4AB2-A2BA-20BD9B72C8C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F68142AA-3C74-4AB2-A2BA-20BD9B72C8C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F68142AA-3C74-4AB2-A2BA-20BD9B72C8C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E91EE7F9-9022-4DEA-B35D-71FCBD627A78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E91EE7F9-9022-4DEA-B35D-71FCBD627A78}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E91EE7F9-9022-4DEA-B35D-71FCBD627A78}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E91EE7F9-9022-4DEA-B35D-71FCBD627A78}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0893A0F9-4883-47EB-A201-13B609B1AE19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0893A0F9-4883-47EB-A201-13B609B1AE19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0893A0F9-4883-47EB-A201-13B609B1AE19}.Release|Any CPU.ActiveCfg = Release|Any CPU

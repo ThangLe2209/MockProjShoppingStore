@@ -11,17 +11,20 @@ namespace ShoppingStore.API.Controllers
 {
 	[ApiController]
 	[Route("api/[controller]")]
-	public class ProductsController : Controller
+    //[Authorize]
+    public class ProductsController : Controller
 	{
 		private readonly IProductRepository _productRepository;
 		private readonly IMapper _mapper;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+		private readonly IImageUploadService _imageUploadService;
+		private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductsController(IProductRepository productRepository, IMapper mapper, IWebHostEnvironment webHostEnvironment)
+        public ProductsController(IProductRepository productRepository, IMapper mapper, IWebHostEnvironment webHostEnvironment, IImageUploadService imageUploadService)
 		{
 			_productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
 			this._mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _webHostEnvironment = webHostEnvironment ?? throw new ArgumentException(nameof(webHostEnvironment));
+            _imageUploadService = imageUploadService ?? throw new ArgumentException(nameof(imageUploadService));
         }
 
 		[HttpGet]
@@ -87,7 +90,6 @@ namespace ShoppingStore.API.Controllers
 			var finalProduct = _mapper.Map<ProductModel>(product);
 
 			await _productRepository.AddProductAsync(finalProduct);
-
 			await _productRepository.SaveChangesAsync(); // after this line execute we will have new Id, foregin key data for variable finalPointOfInterest which auto generated from database (can set breakpoint at line 75, 95, 99 to see) and also update to database
 			var createdProductToReturn = _mapper.Map<ProductDto>(finalProduct);
 			return CreatedAtRoute("GetProductById", // Name of Api Get from line 55 - to set location header in postman when we successfully created - location header will be api get in line 24 Ex: view cap1 image in folder 04 
@@ -116,29 +118,31 @@ namespace ShoppingStore.API.Controllers
 
             if (updatedProduct.ImageUpload != null)
             {
-                string uploadsDir = Path.Combine(_webHostEnvironment.WebRootPath, "media/products");
-                string imageName = Guid.NewGuid().ToString() + "_" + updatedProduct.ImageUpload.FileName;
-                string filePath = Path.Combine(uploadsDir, imageName);
-                FileStream fs = new FileStream(filePath, FileMode.Create);
-                await updatedProduct.ImageUpload.CopyToAsync(fs); // copy image fo file by mode create
-                fs.Close();
+     //           string uploadsDir = Path.Combine(_webHostEnvironment.WebRootPath, "media/products");
+     //           string imageName = Guid.NewGuid().ToString() + "_" + updatedProduct.ImageUpload.FileName;
+     //           string filePath = Path.Combine(uploadsDir, imageName);
+     //           FileStream fs = new FileStream(filePath, FileMode.Create);
+     //           await updatedProduct.ImageUpload.CopyToAsync(fs); // copy image fo file by mode create
+     //           fs.Close();
 
-                //delete old picture
-                string oldfilePath = Path.Combine(uploadsDir, currentProduct.Image);
+     //           //delete old picture
+     //           string oldfilePath = Path.Combine(uploadsDir, currentProduct.Image);
 
-                try
-                {
-                    if (System.IO.File.Exists(oldfilePath))
-                    {
-                        System.IO.File.Delete(oldfilePath);
-                    }
-                    currentProduct.Image = imageName;
-                }
-                catch (Exception ex)
-                {
-					return BadRequest("An error occurred while deleting the product image.");
-                }
-
+     //           try
+     //           {
+     //               if (System.IO.File.Exists(oldfilePath))
+     //               {
+     //                   System.IO.File.Delete(oldfilePath);
+     //               }
+     //               currentProduct.Image = imageName;
+     //           }
+     //           catch (Exception ex)
+     //           {
+					//return BadRequest("An error occurred while deleting the product image.");
+     //           }
+                var urlResponse = await _imageUploadService.Upload(updatedProduct.ImageUpload);
+				string toBeSearched = "upload/";
+				currentProduct.Image = urlResponse.Substring(urlResponse.IndexOf(toBeSearched) + toBeSearched.Length);
             }
 
             _mapper.Map(updatedProduct, currentProduct); // source, dest => use mapper like this will override data from source to dest
@@ -151,7 +155,6 @@ namespace ShoppingStore.API.Controllers
         {
             try
             {
-
                 ProductModel currentProduct = await _productRepository.GetProductAsync(productId);
                 var productImagePath = currentProduct.Image;
                 if (currentProduct == null)
@@ -162,7 +165,7 @@ namespace ShoppingStore.API.Controllers
 
                 _productRepository.DeleteProduct(currentProduct);
                 await _productRepository.SaveChangesAsync();
-                _productRepository.DeleteProductImage(productImagePath);
+                //_productRepository.DeleteProductImage(productImagePath); // xóa image ở đây sau savechange vì bắt lỗi foreign key constraint phải xóa product thành công thì mới xóa ảnh
 
                 //_mailService.Send("Point of interest deleted.",
                 //    $"Point of interest {pointOfInterestEntity.Name} with id {pointOfInterestEntity.Id} was deleted.");
@@ -171,7 +174,7 @@ namespace ShoppingStore.API.Controllers
             }
             catch (Exception ex)
             {
-                if (ex.InnerException.ToString().Contains("FOREIGN KEY constraint"))
+                if (ex.InnerException.ToString().Contains("foreign key constraint"))
                 {
                     return BadRequest("Delete OrderDetail first!");
                 }

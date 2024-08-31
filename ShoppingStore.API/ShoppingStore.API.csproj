@@ -7,12 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+      <PackageReference Include="CloudinaryDotNet" Version="1.26.2" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	  <PackageReference Include="IdentityModel.AspNetCore.OAuth2Introspection" Version="6.2.0" />
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
 	  <PackageReference Include="AutoMapper" Version="12.0.1" />
 	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
 	  <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.1" />
+	  <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
@@ -22,11 +24,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ShoppingStore.Model\ShoppingStore.Model.csproj" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
+    <Reference Include="ShoppingStore.Model">
+      <HintPath>ShoppingStore.Model.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

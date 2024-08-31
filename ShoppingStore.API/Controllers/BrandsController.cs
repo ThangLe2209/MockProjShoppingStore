@@ -109,7 +109,7 @@ namespace ShoppingStore.API.Controllers
             }
             catch (Exception ex)
             {
-                if (ex.InnerException.ToString().Contains("FOREIGN KEY constraint"))
+                if (ex.InnerException.ToString().Contains("foreign key constraint"))
                 {
                     return BadRequest("Delete Product first!");
                 }

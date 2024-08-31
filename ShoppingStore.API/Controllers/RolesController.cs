@@ -10,6 +10,7 @@ namespace ShoppingStore.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class RolesController : Controller
     {
         private readonly IRoleRepository _roleRepository;

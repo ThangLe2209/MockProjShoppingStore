@@ -1,5 +1,6 @@
 ﻿using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
+using Thang.IDP.Services;
 
 namespace Thang.IDP;
 
@@ -52,11 +53,13 @@ public static class Config
                     AccessTokenLifetime = 120,
                     RedirectUris = // login page code redirect to client in this uri - host is FE address/signin-oidc
                     {
-                        "https://localhost:7239/signin-oidc"
+                        //"https://localhost:7239/signin-oidc"
+                        $"{ConfigurationHelper.config["FEPort"]}/signin-oidc"
                     },
                     PostLogoutRedirectUris = //logout url redirect
                     {
-                        "https://localhost:7239/signout-callback-oidc"
+                        //"https://localhost:7239/signout-callback-oidc"
+                        $"{ConfigurationHelper.config["FEPort"]}/signout-callback-oidc"
                     },
                     AllowedScopes =
                     {

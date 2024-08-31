@@ -48,7 +48,7 @@ namespace ShoppingStore.Client.Controllers
 			HttpContext.Session.SetJson("Cart", cart);
 
 			TempData["success"] = "Add item to cart successfully";
-            return Redirect(Request.Headers["Referer"].ToString()); // back to previous page before access this action
+			return Redirect(Request.Headers["Referer"].ToString()); // back to previous page before access this action
 		}
 
 		public async Task<IActionResult> Decrease(Guid Id)

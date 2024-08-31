@@ -23,14 +23,16 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ShoppingStoreContext>(options =>
 {
-	options.UseSqlite(
-		builder.Configuration["ConnectionStrings:ShoppingStoreDBConnectionString"]);
+    //options.UseSqlite(
+    //	builder.Configuration["ConnectionStrings:ShoppingStoreDBConnectionString"]);
+    options.UseNpgsql(builder.Configuration.GetConnectionString("ShoppingStoreDBConnectionString"));
 });
 
 builder.Services.AddDbContext<IdentityDbContext>(options =>
 {
-    options.UseSqlite(
-        builder.Configuration["ConnectionStrings:IdentityDBConnectionString"]);
+    //options.UseSqlite(
+    //    builder.Configuration["ConnectionStrings:IdentityDBConnectionString"]);
+    options.UseNpgsql(builder.Configuration.GetConnectionString("IdentityDBConnectionStringPostgres"));
 });
 
 
@@ -41,6 +43,7 @@ builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRatingRepository, RatingRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IImageUploadService, CloudinaryImageUploadService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -93,11 +96,11 @@ builder.Services.AddAuthorization(authorizationOptions =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
 	app.UseSwagger();
 	app.UseSwaggerUI();
-}
+//}
 
 app.UseHttpsRedirection();
 

@@ -11,9 +11,11 @@
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.1" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
-	
+
   <ItemGroup>
-    <ProjectReference Include="..\ShoppingStore.Model\ShoppingStore.Model.csproj" />
+    <Reference Include="ShoppingStore.Model">
+      <HintPath>ShoppingStore.Model.dll</HintPath>
+    </Reference>
   </ItemGroup>
 	
   <ItemGroup>

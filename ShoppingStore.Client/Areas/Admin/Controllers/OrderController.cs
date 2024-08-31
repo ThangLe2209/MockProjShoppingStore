@@ -7,7 +7,7 @@ namespace ShoppingStore.Client.Areas.Admin.Controllers
 {
 	[Area("Admin")]
     [Authorize]
-	public class OrderController : Controller
+    public class OrderController : Controller
 	{
 		private readonly ShoppingStoreService _shoppingStoreService;
 
